@@ -1,0 +1,14 @@
+name: gl1tch-weather
+description: "Inline weather report with companion commentary"
+binary: gl1tch-weather
+install:
+  go: github.com/adam-stokes/gl1tch-weather
+sidecar:
+  command: gl1tch-weather
+  description: "Fetch current weather and 5-day forecast for any location"
+  kind: tool
+  input_schema: "string"
+  output_schema: "string"
+  signals:
+    - topic: weather.conditions
+      handler: companion
