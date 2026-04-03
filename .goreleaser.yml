@@ -1,0 +1,59 @@
+# .goreleaser.yml — GoReleaser configuration for gl1tch-weather
+# https://goreleaser.com
+version: 2
+
+project_name: gl1tch-weather
+
+builds:
+  - id: gl1tch-weather
+    binary: gl1tch-weather
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - id: default
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+brews:
+  - name: gl1tch-weather
+    repository:
+      owner: 8op-org
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/adam-stokes/gl1tch-weather"
+    description: "gl1tch weather widget"
+    license: "MIT"
+    install: |
+      bin.install "gl1tch-weather"
+    test: |
+      assert_predicate bin/"gl1tch-weather", :exist?
+    skip_upload: false
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^chore"
+      - "^docs"
+      - "^ci"
+      - "^test"
